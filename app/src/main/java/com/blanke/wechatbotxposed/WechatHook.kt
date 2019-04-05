@@ -12,7 +12,7 @@ class WechatHook : IXposedHookLoadPackage {
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
         BasicUtil.tryVerbosely {
             if (SpellBook.isImportantWechatProcess(lpparam)) {
-                XposedBridge.log("Hello Wechat!")
+                XposedBridge.log("wechat bot is alive........")
                 SpellBook.startup(lpparam, listOf(
                         WechatMessageHook
                 ), listOf(

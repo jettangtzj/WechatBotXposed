@@ -11,7 +11,7 @@ object WechatMessageHook : IMessageStorageHook {
 
     override fun onMessageStorageInserted(msgId: Long, msgObject: Any) {
         XposedBridge.log("onMessageStorageInserted msgId=$msgId,msgObject=$msgObject")
-//        printMsgObj(msgObject)
+        printMsgObj(msgObject)
         // 这些都是消息的属性，内容，发送人，类型等
         val field_content = XposedHelpers.getObjectField(msgObject, "field_content") as String?
         val field_talker = XposedHelpers.getObjectField(msgObject, "field_talker") as String?
@@ -24,10 +24,10 @@ object WechatMessageHook : IMessageStorageHook {
         }
         if (field_type == 1) { //文本消息
             // field_content 就是消息内容，可以接入图灵机器人回复
-            val replyContent = "reply: \n$field_content"
+            val replyContent = field_content?.substringAfter(":", "")
             Objects.ChattingFooterEventImpl?.apply {
                 // 将 wx_id 和 回复的内容用分隔符分开
-                val content = "$field_talker$wxMsgSplitStr$replyContent"
+                val content = "$replyContent"
                 val success = Methods.ChattingFooterEventImpl_SendMsg.invoke(this, content) as Boolean
                 XposedBridge.log("reply msg success = $success")
             }

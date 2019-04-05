@@ -27,7 +27,10 @@ object SendMsgHooker : HookerProvider {
                         // 设置到 args 里
                         this[0] = wxId
                         this[1] = contentReal
+                        XposedBridge.log("***********wxId=$wxId")
+                        XposedBridge.log("***********contentReal=$contentReal")
                     }
+                    XposedBridge.log("***********content=$content")
                 }
             }
         })
@@ -45,7 +48,7 @@ object SendMsgHooker : HookerProvider {
     private val chattingFooterEventImplHook = Hooker {
         XposedBridge.hookAllConstructors(Classes.ChattingFooterEventImpl, object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam?) {
-//                XposedBridge.log("ChattingFooterEventImpl = ${param?.thisObject}")
+                XposedBridge.log("ChattingFooterEventImpl = ${param?.thisObject}")
                 Objects.ChattingFooterEventImpl = param?.thisObject
             }
         })

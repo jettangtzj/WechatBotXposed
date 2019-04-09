@@ -18,19 +18,21 @@ object SendMsgHooker : HookerProvider {
         XposedBridge.hookAllConstructors(Classes.NetSceneSendMsg, object : XC_MethodHook() {
             override fun beforeHookedMethod(param: MethodHookParam?) {
                 param?.args?.apply {
-                    val content = this[1] as String
-                    val splitIndex = content.indexOf(wxMsgSplitStr)
-                    if (splitIndex > 0) {//如果存在这个分隔符，代表是我们 hook 的
-                        // 拆分出我们拼凑的 wxId 和 实际要发送的内容
-                        val wxId = content.substring(0, splitIndex)
-                        val contentReal = content.substring(splitIndex + wxMsgSplitStr.length, content.length)
-                        // 设置到 args 里
-                        this[0] = wxId
-                        this[1] = contentReal
-                        XposedBridge.log("***********wxId=$wxId")
-                        XposedBridge.log("***********contentReal=$contentReal")
+                    if(this.size > 0){
+                        val content = this[1] as String
+                        val splitIndex = content.indexOf(wxMsgSplitStr)
+                        if (splitIndex > 0) {//如果存在这个分隔符，代表是我们 hook 的
+                            // 拆分出我们拼凑的 wxId 和 实际要发送的内容
+                            val wxId = content.substring(0, splitIndex)
+                            val contentReal = content.substring(splitIndex + wxMsgSplitStr.length, content.length)
+                            // 设置到 args 里
+                            this[0] = wxId
+                            this[1] = contentReal
+                            XposedBridge.log("***********wxId=$wxId")
+                            XposedBridge.log("***********contentReal=$contentReal")
+                        }
+                        XposedBridge.log("***********content=$content")
                     }
-                    XposedBridge.log("***********content=$content")
                 }
             }
         })
